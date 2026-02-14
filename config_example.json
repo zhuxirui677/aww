@@ -1,0 +1,67 @@
+{
+  "quantization": {
+    "comment": "AWQ 量化配置",
+    "method": "AWQ",
+    "bits": 4,
+    "group_size": 128,
+    "zero_point": true,
+    "version": "GEMM"
+  },
+  
+  "calibration": {
+    "comment": "校准数据配置",
+    "data_path": "./mimic_train_cleaned.csv",
+    "num_samples": 500,
+    "random_seed": 42,
+    "text_column": "text"
+  },
+  
+  "model": {
+    "comment": "模型配置",
+    "original_model_path": "mistralai/Mistral-7B-Instruct-v0.2",
+    "quantized_model_path": "./medgamma-awq-4bit",
+    "trust_remote_code": true,
+    "device_map": "auto"
+  },
+  
+  "evaluation": {
+    "comment": "评估配置",
+    "eval_data_path": "./mimic_eval_cleaned.csv",
+    "num_eval_samples": 100,
+    "metrics": ["f1_score", "inference_speed", "memory_usage"],
+    "radgraph_model": "modern-radgraph-xl"
+  },
+  
+  "generation": {
+    "comment": "报告生成配置",
+    "prompt_file": "./prompts/example_prompt.txt",
+    "max_new_tokens": 256,
+    "temperature": 0.7,
+    "top_p": 0.9,
+    "do_sample": true
+  },
+  
+  "hardware": {
+    "comment": "硬件配置建议",
+    "quantization_min_vram_gb": 20,
+    "inference_min_vram_gb": 5,
+    "recommended_gpu": [
+      "NVIDIA A100 (40GB/80GB)",
+      "NVIDIA RTX 4090 (24GB)",
+      "NVIDIA RTX 3090 (24GB)"
+    ]
+  },
+  
+  "notes": {
+    "量化时间": "10-30分钟（取决于模型大小和 GPU）",
+    "模型大小减少": "约 75%（FP16 → 4-bit）",
+    "推理速度提升": "约 2-3x",
+    "F1 精度损失": "通常 < 1%",
+    "适用场景": [
+      "生产环境部署",
+      "GPU 资源受限",
+      "需要低延迟推理",
+      "大规模批量处理"
+    ]
+  }
+}
